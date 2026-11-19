@@ -8,6 +8,7 @@
 \usepackage{caption} % DO NOT CHANGE THIS AND DO NOT ADD ANY OPTIONS TO IT
 \frenchspacing  % DO NOT CHANGE THIS
 \usepackage{booktabs}
+\usepackage{array}
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
@@ -16,7 +17,7 @@
 /TemplateVersion (2027.1)
 }
 
-\setcounter{secnumdepth}{1}
+\setcounter{secnumdepth}{0}
 
 \newtheorem{theorem}{Theorem}
 \newtheorem{lemma}{Lemma}
@@ -50,7 +51,14 @@ Credit risk models are usually fit to historical outcomes, and they break when c
 
 A stress test is only as good as its tail, and in credit the tail is the liquidation cascade. A price drop pushes leveraged positions under their liquidation threshold. Their collateral is sold, which pushes the price down further and liquidates more positions. Decentralized (on-chain) lending protocols run this loop in public code: every position, liquidation and parameter change is recorded \citep{qin2021liquidations}, and liquidators' sales move prices on decentralized exchanges \citep{lehar2022fragility}. That makes on-chain lending a clean testbed for any simulator that claims to predict cascades.
 
-This paper asks a narrow question that any such simulator must answer: \emph{if the model's picture of the positions at risk is off by $\eta$, how far off is its cascade?} The answer has two halves. First, map error is shock error: a model with a wrong liquidation map predicts exactly what the true market would do under a shock shifted by at most $\Lp\eta$, with no amplification and no conditions (Lemma~\ref{lem:shock}). Second, the cascade reads that sideways error off its own curve, whose slope is $1/(1-\lambda)$ for local branching ratio $\lambda$. So size error grows without bound near criticality (Theorem~\ref{thm:stability}), as Figure~\ref{fig:error} shows.
+This paper asks a narrow question that any such simulator must answer: \emph{if the model's picture of the positions at risk is off by $\eta$, how far off is its cascade?} The answer has two halves. First, map error is shock error: a model with a wrong liquidation map predicts exactly what the true market would do under a shock shifted by at most $\Lp\eta$, with no amplification and no conditions (Lemma~\ref{lem:shock}). Second, the cascade reads that sideways error off its own curve, whose slope is $1/(1-\lambda)$ for local branching ratio $\lambda$. So size error grows without bound near criticality (Theorem~\ref{thm:stability}). Figure~\ref{fig:geometry} draws both halves.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/cascade_geometry.pdf}
+\caption{How map error becomes cascade error, for books with linear impact. (a) A smooth map with $\lb=0.8$. The model's cascade map $T_\nu$ sits $\Lp\eta$ above the true $T_\mu$, exactly as a larger shock would (Lemma~\ref{lem:shock}). The cascades, where each map meets the diagonal, differ by $r=\Lp\eta/(1-\lb)$ (Theorem~\ref{thm:stability}). (b) A wall of mass $m$ at $\Dstar{\mu}+r/2$. The model's map stays above the diagonal up to the wall, so its cascade runs through it, an error of at least $\Lp m$ (Proposition~\ref{prop:wall}). (c) The cascade against the shock, for the books of (b). The model's curve is the true one moved left by $\Lp\eta$. At the shock of (b) the size error is order one, while the shock that breaches any level is off by only $\Lp\eta$ (Proposition~\ref{prop:breach}).}
+\label{fig:geometry}
+\end{figure*}
 
 \paragraph{Contributions.} We give
 (i) a sharp stability bound for a learned model's cascade prediction, with an explicit interval on which it holds (Theorem~\ref{thm:stability}, Proposition~\ref{prop:sharp});
@@ -86,7 +94,7 @@ For any maps $\mu,\nu$ and shock $\delta$, with $c=\Lp\eta$,
 \]
 \end{lemma}
 
-No slope condition is needed. The model's cascade curve sits within $\Lp\eta$ of the true one in the \emph{shock} direction. All size error comes from reading that sideways error off a steep curve.
+No slope condition is needed. The model's cascade curve sits within $\Lp\eta$ of the true one in the \emph{shock} direction (Figure~\ref{fig:geometry}c). All size error comes from reading that sideways error off a steep curve.
 
 \begin{theorem}[stability]\label{thm:stability}
 Let $r=\Lp\eta/(1-\lb)$. If $T_\mu$ is $\lb$-Lipschitz on $I=[\delta,\ \Dstar{\mu}+r]$ with $\lb<1$, then $|\Dstar{\mu}-\Dstar{\nu}|\le r$.
@@ -102,7 +110,7 @@ For every $\lb\in(0,1)$, $\Lp>0$, $\delta>0$ and $\varepsilon>0$ there are maps 
 Fix $\lambda_1<1$, $\Lp$, $\delta>0$ and a mass $m$. For every $\varepsilon>0$ there are maps with $\eta=\varepsilon$, $T_\mu$ $\lambda_1$-Lipschitz up to $\Dstar{\mu}+r/2$, a point mass $m$ at $\Dstar{\mu}+r/2$, and $\Dstar{\nu}-\Dstar{\mu}\ge\Lp m$.
 \end{proposition}
 
-A wall, a block of positions sharing one liquidation price such as loans opened at the maximum loan-to-value ratio, turns an arbitrarily small map error into an order-one cascade error. The jump itself is the known fire-sale discontinuity; what Proposition~\ref{prop:wall} adds is its reach. The radius $r$ grows without bound as $\lb\to1$, so near criticality a model must resolve every wall within a widening window.
+A wall, a block of positions sharing one liquidation price such as loans opened at the maximum loan-to-value ratio, turns an arbitrarily small map error into an order-one cascade error (Figure~\ref{fig:geometry}b). The jump itself is the known fire-sale discontinuity; what Proposition~\ref{prop:wall} adds is its reach. The radius $r$ grows without bound as $\lb\to1$, so near criticality a model must resolve every wall within a widening window.
 
 \begin{proposition}[aggregates have a floor]\label{prop:aggregate}
 Let $g_1,\dots,g_k$ be continuous with $1,g_1,\dots,g_k$ linearly independent on every tail $[B,\infty)$. For every wall mass $m$ there are maps $\mu,\nu$ with equal mass, $\int g_j\,d\mu=\int g_j\,d\nu$ for all $j$, and $|\Dstar{\mu}-\Dstar{\nu}|\ge\Lp m$.
@@ -143,7 +151,14 @@ The rule-driven part of a governance change is thus an ordinary cascade at a shi
 \[
 \Lp=\frac{\psi(1-f)}{X_0(1+k)},\qquad k=\frac{\psi(1-f)X}{(2-f)X_0},
 \]
-where $\varphi_{\mathrm{dex}}(v)=\log(X+v)+\log(X+(1-f)v)-2\log X$ is the pool's own impact. An arbitrage dead zone of width $\tau$ adds a fixed shock error $k\tau/(1+k)$ to the numerator of Theorem~\ref{thm:stability}. So $\Lp$ can be estimated from pool reserves rather than assumed, as the empirical work on liquidator price impact suggests \citep{lehar2022fragility}.
+where $\varphi_{\mathrm{dex}}(v)=\log(X+v)+\log(X+(1-f)v)-2\log X$ is the pool's own impact. An arbitrage dead zone of width $\tau$ adds a fixed shock error $k\tau/(1+k)$ to the numerator of Theorem~\ref{thm:stability}. So $\Lp$ can be estimated from pool reserves rather than assumed, as the empirical work on liquidator price impact suggests \citep{lehar2022fragility}. Figure~\ref{fig:impact} checks both statements against arbitrage simulated round by round.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/impact_transmission.pdf}
+\caption{Impact a liquidator's sale transmits to the reference exchange, for a pool and exchange of equal depth ($k\approx0.25$, fee 0.3\%). Simulated arbitrage (dots) matches the first-order formula $k\varphi_{\mathrm{dex}}/(1+k)$ within 3\% and stays under $\Lp v$. With a dead zone $\tau=1\%$ (triangles), the drop falls short by at most $k\tau/(1+k)$ (shaded). The pool itself drops $(1+k)/k\approx5$ times as much, so pool impact would overstate $\Lp$ fivefold.}
+\label{fig:impact}
+\end{figure}
 
 \paragraph{Smoothing.} Learning through liquidation eligibility needs a smooth surrogate of the indicator $\mathbb{1}[\log\mathrm{HF}<0]$. Replacing it with a logistic of width $h$ changes the forced-sale curve of any map with density at most $\rho$ by at most $\rho h\log 2$, which is attained, and when $\Lp\rho<1$ the smoothed cascade moves by at most $\Lp\rho h\log2/(1-\Lp\rho)$. A book of discrete positions has a floor of half its largest position for every $h$, which is why the model's smooth map, not the book, takes the role of $\mu$ in Theorem~\ref{thm:stability}.
 
@@ -157,18 +172,18 @@ where $d_t$ is the distribution of agent observations under the new rules, $d^{\
 
 \paragraph{For generative financial simulators.} The bounds are model-agnostic: they hold for a learned agent model, a sequence model of market states, or a language-model agent simulation, as long as it implies a liquidation map. Three practices follow. Report an estimate of $\lb$ and the radius $\hat r$ next to every predicted cascade, since the same map error costs $1/(1-\lb)$ times more near criticality. Report breach shocks for known walls, which keep their accuracy where cascade sizes lose it. And evaluate models whose state is aggregate on pairs of market states with matched aggregates, where Proposition~\ref{prop:aggregate} says they must fail. A model that is accurate on average can still be useless for stress testing if its error concentrates in the steep part of the cascade curve.
 
-\paragraph{Numerical checks.} Each result is tested on random liquidation books built from point masses and piecewise-constant densities, with linear impact so that least fixed points are exact. The checks include a negative control: removing the $1/(1-\lb)$ factor from Theorem~\ref{thm:stability} must fail, and it does, so the tests are not vacuous. The constants of Section~4 are checked against simulated pools and arbitrage, and the smoothing bound and the simulation bound against random instances. All 40 checks pass: 13 for Section~3, 20 for the constants and smoothing, and 7 for the intervention bound. Code for every check and for Figure~\ref{fig:error} accompanies the submission.
+\paragraph{Numerical checks.} Each result is tested on random liquidation books built from point masses and piecewise-constant densities, with linear impact so that least fixed points are exact. The checks include a negative control: removing the $1/(1-\lb)$ factor from Theorem~\ref{thm:stability} must fail, and it does, so the tests are not vacuous. The impact constant and dead zone are checked against simulated pools and arbitrage, and the smoothing bound and the simulation bound against random instances. All 40 checks pass: 13 for the cascade results, 20 for the constants and smoothing, and 7 for the intervention bound. Code for every check and for the figures accompanies the submission.
 
 \paragraph{Predictions for real data.} Each result names a measurement on chain data (Table~\ref{tab:predictions}). The inputs are estimable: $\hat\eta$ from per-address positions, $\hat L_\varphi$ from pool reserves, and $\hat\lambda$ from a smoothed map.
 
 \begin{table}[t]
 \centering
 \footnotesize
-\begin{tabular}{@{}p{0.13\columnwidth}p{0.19\columnwidth}p{0.56\columnwidth}@{}}
+\begin{tabular}{@{}>{\raggedright\arraybackslash}p{0.13\columnwidth}>{\raggedright\arraybackslash}p{0.22\columnwidth}>{\raggedright\arraybackslash}p{0.53\columnwidth}@{}}
 \toprule
 Result & Error bound & Prediction to test on chain data \\
 \midrule
-Thm.~\ref{thm:stability} & $\Lp\eta/(1-\lb)$, sharp & Cascade error grows with $\hat\eta/(1-\hat\lambda)$ across historical shocks \\
+Thm.~\ref{thm:stability} & \mbox{$\Lp\eta/(1-\lb)$}, sharp & Cascade error grows with $\hat\eta/(1-\hat\lambda)$ across historical shocks \\
 Prop.~\ref{prop:wall} & $\ge\Lp m$ & Large misses concentrate where a wall sits within $\hat r$ of the predicted cascade \\
 Prop.~\ref{prop:aggregate} & $\ge\Lp m/2$ & Aggregate models fail most on states with matched aggregates and different local mass \\
 Props.~\ref{prop:breach}, \ref{prop:tail} & $\Lp\eta$ & Breach-shock error does not grow with $\hat\lambda$; tail risk is bracketed \\
