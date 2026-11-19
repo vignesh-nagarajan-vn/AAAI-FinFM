@@ -24,7 +24,7 @@ python scripts/make_figure.py        # writes paper/figures/cascade_error.pdf (n
 cd paper && pdflatex main && bibtex main && pdflatex main && pdflatex main
 ```
 
-The 36 numerical checks the paper cites live in the source project's `math-derivations/` folder.
+The 40 numerical checks the paper cites live in the source project's `math-derivations/` folder.
 
 ## Before Submitting
 
