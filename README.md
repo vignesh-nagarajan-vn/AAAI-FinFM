@@ -2,22 +2,23 @@
 
 - **Target Venue:** [FinFM: Foundation Models and Generative AI for Finance](https://finfm.finhorizons.org/), a workshop at [AAAI 2027](https://aaai.org/conference/aaai/aaai-27/), Montréal, Feb 22 or 23, 2027
   - **Deadlines:** Paper due Nov 20, 2026 (AoE). Notification Dec 2, 2026.
-  - **Format:** AAAI-27 template, double-blind on OpenReview. Short papers up to 4 pages, long papers up to 7. References and appendices are unlimited.
+  - **Format:** Short paper, research track: 4 pages of technical content in the AAAI-27 template, double-blind on OpenReview. References and appendices are unlimited.
   - **Status:** Non-archival, with no proceedings or DOI. One co-author must present in person.
+- **Source Project:** [World-Models](https://github.com/vignesh-nagarajan-vn/World-Models), the full work, which targets ICML 2027. ICML allows prior presentation at non-archival workshops.
 
-This repo holds a short workshop version of the World-Models project. The project builds world models for credit: learned simulators of how a lending system evolves given its state and the external factors acting on it. Decentralized (on-chain) lending is the testbed, because every loan, liquidation, and rule change is public and timestamped. The full version targets ICML 2027, which allows prior presentation at non-archival workshops.
+This repo holds a 4-page theory paper drawn from the World-Models project. The project builds world models for credit: learned simulators of how a lending system evolves, with decentralized (on-chain) lending as the testbed. The paper asks when such a model's predictions can be trusted, and answers with the math alone. Every result is proved, and each has a numerical check in the source repo.
 
-The world model has three layers: an exact re-implementation of the protocol's rules, learned policies for borrowers, liquidators, and arbitrageurs, and a sparse learned interface for external factors. All experiments so far run on a synthetic world; no real chain data has been loaded yet.
+## Paper Scope
 
-## Research Questions
+- **Cascade prediction error (main result).** Liquidation-map error acts as shock error, so cascade error is at most $L_\varphi\eta/(1-\bar\lambda)$. The bound is sharp and fails at liquidation walls; breach shocks stay stable. Aggregates have an error floor.
+- **Evaluating interventions.** Composition and behavioral effects of a governance change, a placebo test, and a χ² overlap bound on when model error can pass for behavior change. All of it is cited technique, framed for this setting.
+- **Constants from the model layers.** The outcome error from smoothing the liquidation threshold, and the price impact implied by a profit-gated liquidator. Only the proved bounds are included.
 
-- **RQ1: Interventional validity.** Can a world model trained on observational on-chain lending data correctly predict the effects of interventions it never saw in training?
-- **RQ2: Robustness under regime shift.** Does a sparse, learned interface for external factors help world models generalize to unseen crisis regimes better than models with no external inputs or with all inputs fed in naively?
-- **RQ3: Tail dynamics from agent structure.** Can a multi-agent world model of learned borrower, liquidator, and arbitrageur policies reproduce the tail statistics of liquidation cascades that aggregate, single-agent models miss?
+Left out: all experiments, since results so far are synthetic and real chain data is not loaded yet. Also left out are the two smoothing and price-impact predictions that did not hold on learned models.
 
 ## Repo Roadmap
 
 ```
 AAAI-FinFM/
-└── README.md      venue details, project summary, RQs, this roadmap
+└── README.md      venue details, source project, paper scope, this roadmap
 ```
