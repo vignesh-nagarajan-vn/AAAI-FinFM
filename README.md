@@ -1,11 +1,12 @@
 # AAAI-FinFM
 
 - **Target Venue:** [FinFM: Foundation Models and Generative AI for Finance](https://finfm.finhorizons.org/), a workshop at [AAAI 2027](https://aaai.org/conference/aaai/aaai-27/) in Montréal
-  - **Dates:** Paper due Nov 20, 2026 AoE (Nov 21, 11:59 UTC). Notification Dec 2. Workshop Feb 22 or 23, 2027.
+  - **Dates:** Notification Dec 2, 2026. Workshop Feb 22 or 23, 2027.
   - **Format:** Short paper, research track: 4 pages of technical content in the AAAI-27 template, double-blind on OpenReview. References and the appendix do not count toward it.
   - **Status:** Non-archival, with no proceedings or DOI. One co-author must present in person.
 - **Source Project:** [World-Models](https://github.com/vignesh-nagarajan-vn/World-Models), the full work for ICML 2027, which permits non-archival workshop papers.
-- **Paper:** [`paper/main.pdf`](paper/main.pdf), anonymized. Main text ends on page 4, then references and the proof appendix.
+- **Paper:** *Lipschitz Stability of Liquidation Cascades under Learned-Model Error*, in [`paper/main.pdf`](paper/main.pdf), anonymized. Main text ends on page 4, followed by references and the proof appendix.
+- **Submission:** OpenReview submission 72, filed Nov 20, 2026 as a short research paper under CC BY 4.0.
 
 This repo holds a 4-page theory paper drawn from the World-Models project. The project builds world models for credit: learned simulators of how a lending system evolves, with decentralized (on-chain) lending as the testbed. The paper asks how far a learned simulator can miss a liquidation cascade, given its error in the liquidation map, and answers with the math alone. Every result is proved in the appendix and checked numerically.
 
